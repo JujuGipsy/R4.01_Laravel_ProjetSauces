@@ -1,0 +1,53 @@
+<!-- resources/views/sauces/index.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+    <div class="container">
+        <h1>Toutes les Sauces</h1>
+        
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Fabricant</th>
+                    <th>Chaleur</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($sauces as $sauce)
+                    <tr>
+                        <td>{{ $sauce->name }}</td>
+                        <td>{{ $sauce->manufacturer }}</td>
+                        <td>{{ $sauce->heat }}</td>
+                        <td>
+                            <a href="{{ route('sauces.show', $sauce->id) }}" class="btn btn-info btn-sm">Voir</a>
+                            <a href="{{ route('sauces.edit', $sauce->id) }}" class="btn btn-primary btn-sm">Modifier</a>
+                            <form action="{{ route('sauces.destroy', $sauce->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- Vérification si l'utilisateur est connecté pour afficher le bouton -->
+        @auth
+            <a href="{{ route('sauces.create') }}">Ajouter une sauce</a>
+        @endauth
+
+        <!-- Si l'utilisateur n'est pas connecté, tu peux afficher un message ou ne rien afficher -->
+        @guest
+            <p>Vous devez être connecté pour ajouter une sauce.</p>
+        @endguest
+    </div>
+@endsection
