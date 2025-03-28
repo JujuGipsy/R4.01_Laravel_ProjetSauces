@@ -30,7 +30,7 @@ class SauceController extends Controller
             'description' => 'required|string',
             'mainPepper' => 'required|string',
             'heat' => 'required|integer|min:0|max:10',
-            'imageUrl' => 'nullable|url', // Si l'image est modifiable et optionnelle
+            'imageUrl' => 'required|string',
         ]);
 
         // Ajouter l'ID de l'utilisateur connecté à la sauce
@@ -79,11 +79,17 @@ class SauceController extends Controller
             'manufacturer' => 'string',
             'description' => 'string',
             'main_pepper' => 'string',
-            'image_url' => 'string',
+            'imageUrl' => 'string|unique:sauces,imageUrl,' . $id,
             'heat' => 'integer',
         ]);
 
+        // Vérification si l'URL de l'image est déjà utilisée
+        if (Sauce::where('imageUrl', $request->input('imageUrl'))->where('id', '!=', $sauce->id)->exists()) {
+            return redirect()->back()->withErrors(['imageUrl' => 'Cette URL d\'image est déjà utilisée.']);
+        }
+
         $sauce->update($request->all());
+
 
         return redirect()->route('sauces.index')->with('success', 'Sauce mise à jour avec succès');
     }
@@ -94,7 +100,7 @@ class SauceController extends Controller
         $sauce = Sauce::findOrFail($id);
         $sauce->delete();
 
-        return response()->json(['message' => 'Sauce supprimée avec succès']);
+        return redirect()->route('sauces.index')->with('success', 'Sauce supprimée avec succès');
     }
 
     // Aimer une sauce

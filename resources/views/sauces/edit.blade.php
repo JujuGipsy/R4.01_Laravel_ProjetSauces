@@ -20,8 +20,8 @@
             </div>
 
             <div class="form-group">
-                <label for="main_pepper">Ingrédient principal</label>
-                <input type="text" id="main_pepper" name="main_pepper" class="form-control" value="{{ old('main_pepper', $sauce->main_pepper) }}" required>
+                <label for="mainPepper">Ingrédient principal</label>
+                <input type="text" id="mainPepper" name="mainPepper" class="form-control" value="{{ old('mainPepper', $sauce->mainPepper) }}" required>
             </div>
 
             <div class="form-group">
@@ -31,7 +31,7 @@
 
             <div class="form-group">
                 <label for="image_url">URL de l'image</label>
-                <input type="text" id="image_url" name="image_url" class="form-control" value="{{ old('image_url', $sauce->image_url) }}" required>
+                <input type="text" id="imageUrl" name="imageUrl" class="form-control" value="{{ old('imageUrl', $sauce->imageUrl) }}" required>
             </div>
 
             <div class="form-group">

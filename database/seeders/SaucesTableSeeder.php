@@ -16,7 +16,7 @@ class SaucesTableSeeder extends Seeder
             'manufacturer' => "Feli'Peppers",
             'description' => 'Es une sauce faite con uno pimento qui pique muy bien ! Ayé !',
             'mainPepper' => 'piment oiseau',
-            'imageUrl' => 'https://www.academiedugout.fr/images/7528/1200-auto/piment-oiseau-copy.jpg?poix=50&poiy=50',
+            'imageUrl' => 'https://www.asiamarche.fr/cdn/shop/files/Asiamarche_-_Images_Produits_-_2025-01-10T173024.344_460x@2x.jpg?v=1736526662',
             'heat' => 10,
             'likes' => 1,
             'dislikes' => 0,

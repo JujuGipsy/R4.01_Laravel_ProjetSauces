@@ -28,12 +28,19 @@
                         <td>{{ $sauce->heat }}</td>
                         <td>
                             <a href="{{ route('sauces.show', $sauce->id) }}" class="btn btn-info btn-sm">Voir</a>
+                            @auth
                             <a href="{{ route('sauces.edit', $sauce->id) }}" class="btn btn-primary btn-sm">Modifier</a>
                             <form action="{{ route('sauces.destroy', $sauce->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
                             </form>
+                            @endauth
+
+                            @guest
+                                <p>Vous devez être connecté pour modifier ou supprimer une sauce.</p>
+                            @endguest
+
                         </td>
                     </tr>
                 @endforeach
