@@ -9,7 +9,7 @@
         <p><strong>Chaleur:</strong> {{ $sauce->heat }} / 10</p>
         <p><strong>Avis positifs:</strong> {{ $sauce->likes }}</p>
         <p><strong>Avis négatifs:</strong> {{ $sauce->dislikes }}</p>
-        <img src="{{ $sauce->imageUrl }}" alt="Image de la sauce" style="width:200px; height:auto;"/>
+        <img src="{{ $sauce->imageUrl }}" alt="{{ $sauce->name }}" style="width:200px; height:auto;"/>
 
         @auth
         <a href="{{ route('sauces.edit', $sauce->id) }}" class="btn btn-primary">Modifier</a>
