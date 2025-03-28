@@ -9,10 +9,7 @@ class SauceController extends Controller
 {
     public function index()
     {
-        // Récupérer toutes les sauces de la base de données
         $sauces = Sauce::all();
-
-        // Retourner la vue avec les sauces
         return view('sauces.index', compact('sauces'));
     }
 
@@ -23,7 +20,6 @@ class SauceController extends Controller
 
     public function store(Request $request)
     {
-        // Validation des données envoyées par le formulaire
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'manufacturer' => 'required|string|max:255',
@@ -32,21 +28,12 @@ class SauceController extends Controller
             'heat' => 'required|integer|min:0|max:10',
             'imageUrl' => 'required|string',
         ]);
-
-        // Ajouter l'ID de l'utilisateur connecté à la sauce
-        $validatedData['userId'] = auth()->id();  // Récupère l'ID de l'utilisateur connecté
-
+        $validatedData['userId'] = auth()->id();
         $validatedData['likes'] = 0;
         $validatedData['dislikes'] = 0;
-
-        // Initialiser 'userLiked' et 'userDisliked' avec des tableaux vides
-        $validatedData['userLiked'] = null;  // Les likes peuvent être null
-        $validatedData['userDisliked'] = null;  // Les dislikes peuvent être null
-
-        // Créer une nouvelle sauce dans la base de données
+        $validatedData['usersLiked'] = null;
+        $validatedData['usersDisliked'] = null;
         Sauce::create($validatedData);
-
-        // Rediriger vers la page des sauces avec un message de succès
         return redirect()->route('sauces.index')->with('success', 'Sauce ajoutée avec succès');
     }
 
@@ -55,9 +42,7 @@ class SauceController extends Controller
 
     public function show($id)
     {
-        // Trouver la sauce par son ID, si elle n'existe pas, afficher une page 404
         $sauce = Sauce::findOrFail($id);
-        // Retourner la vue avec les informations de la sauce
         return view('sauces.show', compact('sauce'));
     }
 
@@ -68,8 +53,6 @@ class SauceController extends Controller
         return view('sauces.edit', compact('sauce'));
     }
 
-
-    // Mettre à jour une sauce
     public function update(Request $request, $id)
     {
         $sauce = Sauce::findOrFail($id);
@@ -83,7 +66,6 @@ class SauceController extends Controller
             'heat' => 'integer',
         ]);
 
-        // Vérification si l'URL de l'image est déjà utilisée
         if (Sauce::where('imageUrl', $request->input('imageUrl'))->where('id', '!=', $sauce->id)->exists()) {
             return redirect()->back()->withErrors(['imageUrl' => 'Cette URL d\'image est déjà utilisée.']);
         }
@@ -94,7 +76,6 @@ class SauceController extends Controller
         return redirect()->route('sauces.index')->with('success', 'Sauce mise à jour avec succès');
     }
 
-    // Supprimer une sauce
     public function destroy($id)
     {
         $sauce = Sauce::findOrFail($id);
@@ -103,35 +84,62 @@ class SauceController extends Controller
         return redirect()->route('sauces.index')->with('success', 'Sauce supprimée avec succès');
     }
 
-    // Aimer une sauce
     public function like($id)
-    {
-        $sauce = Sauce::findOrFail($id);
-        $user = auth()->user();
+{
+    $sauce = Sauce::findOrFail($id);
+    $user = auth()->user();
 
-        if (!in_array($user->id, $sauce->users_liked ?? [])) {
-            $sauce->likes += 1;
-            $sauce->users_liked = array_merge($sauce->users_liked ?? [], [$user->id]);
-        }
+    $usersLiked = $sauce->usersLiked ?? [];
+    $usersDisliked = $sauce->usersDisliked ?? [];
 
-        $sauce->save();
+    if (in_array($user->id, $usersDisliked)) {
+        $usersDisliked = array_filter($usersDisliked, fn($userId) => $userId !== $user->id);
+        $sauce->dislikes -= 1; 
 
-        return response()->json($sauce);
+        $usersLiked[] = $user->id;
+        $sauce->likes += 1;
+    } elseif (!in_array($user->id, $usersLiked)) {
+        $usersLiked[] = $user->id;
+        $sauce->likes += 1;
     }
 
-    // Détester une sauce
-    public function dislike($id)
-    {
-        $sauce = Sauce::findOrFail($id);
-        $user = auth()->user();
+    $sauce->update([
+        'usersLiked' => $usersLiked,
+        'usersDisliked' => $usersDisliked,
+        'likes' => $sauce->likes,
+        'dislikes' => $sauce->dislikes,
+    ]);
 
-        if (!in_array($user->id, $sauce->users_disliked ?? [])) {
-            $sauce->dislikes += 1;
-            $sauce->users_disliked = array_merge($sauce->users_disliked ?? [], [$user->id]);
-        }
+    return redirect()->route('sauces.show', $id)->with('success', 'Vous aimez cette sauce.');
+}
 
-        $sauce->save();
 
-        return response()->json($sauce);
+public function dislike($id)
+{
+    $sauce = Sauce::findOrFail($id);
+    $user = auth()->user();
+
+    $usersLiked = $sauce->usersLiked ?? [];
+    $usersDisliked = $sauce->usersDisliked ?? [];
+
+    if (in_array($user->id, $usersLiked)) {
+        $usersLiked = array_filter($usersLiked, fn($userId) => $userId !== $user->id);
+        $sauce->likes -= 1;
+        $usersDisliked[] = $user->id;
+        $sauce->dislikes += 1;
+    } elseif (!in_array($user->id, $usersDisliked)) {
+        $usersDisliked[] = $user->id;
+        $sauce->dislikes += 1;
     }
+
+    $sauce->update([
+        'usersLiked' => $usersLiked,
+        'usersDisliked' => $usersDisliked,
+        'likes' => $sauce->likes,
+        'dislikes' => $sauce->dislikes,
+    ]);
+
+    return redirect()->route('sauces.show', $id)->with('success', 'Vous n\'aimez pas cette sauce.');
+}
+
 }

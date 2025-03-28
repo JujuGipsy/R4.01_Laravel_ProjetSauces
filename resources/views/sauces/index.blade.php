@@ -23,15 +23,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Vérification si l'utilisateur est connecté pour afficher le bouton -->
-                @auth
-                    <a href="{{ route('sauces.create') }}">Ajouter une sauce</a>
-                @endauth
-
-                <!-- Si l'utilisateur n'est pas connecté, tu peux afficher un message ou ne rien afficher -->
-                @guest
-                    <p>Vous devez être connecté pour ajouter une sauce.</p>
-                @endguest
                 
                 @foreach ($sauces as $sauce)
                     <tr>

@@ -12,16 +12,31 @@
         <img src="{{ $sauce->imageUrl }}" alt="{{ $sauce->name }}" style="width:200px; height:auto;"/>
 
         @auth
-        <a href="{{ route('sauces.edit', $sauce->id) }}" class="btn btn-primary">Modifier</a>
-        <form action="{{ route('sauces.destroy', $sauce->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger">Supprimer</button>
-        </form>
+            <div class="d-flex justify-content-between mt-3">
+                <form action="{{ route('sauces.like', $sauce->id) }}" method="POST" id="likeForm">
+                    @csrf
+                    <button type="submit" class="btn btn-success" 
+                        @if(in_array(auth()->user()->id, $sauce->users_liked ?? [])) 
+                            disabled 
+                        @endif>
+                        Like
+                    </button>
+                </form>
+
+                <form action="{{ route('sauces.dislike', $sauce->id) }}" method="POST" id="dislikeForm">
+                    @csrf
+                    <button type="submit" class="btn btn-danger" 
+                        @if(in_array(auth()->user()->id, $sauce->users_disliked ?? [])) 
+                            disabled 
+                        @endif>
+                        Dislike
+                    </button>
+                </form>
+            </div>
         @endauth
 
         @guest
-            <p>Vous devez être connecté pour modifier ou supprimer une sauce.</p>
+            <p>Vous devez être connecté pour modifier, liker ou disliker une sauce.</p>
         @endguest
 
     </div>

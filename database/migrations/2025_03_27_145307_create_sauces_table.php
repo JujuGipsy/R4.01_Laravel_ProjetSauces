@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('sauces', function (Blueprint $table) {
@@ -28,15 +25,12 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::table('sauces', function (Blueprint $table) {
-            $table->json('userLiked')->nullable(false)->change();  // Annule la possibilité d'être nul
-            $table->json('userDisliked')->nullable(false)->change();  // Annule la possibilité d'être nul
+            $table->json('userLiked')->nullable(false)->change();
+            $table->json('userDisliked')->nullable(false)->change();
         });
     }
 };

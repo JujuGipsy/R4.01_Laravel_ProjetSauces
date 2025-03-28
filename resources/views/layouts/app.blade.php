@@ -22,6 +22,11 @@
                 <a class="navbar-brand" href="{{ url('/sauces') }}">
                     Accueil
                 </a>
+                @auth
+                    <a class="navbar-brand" href="{{ route('sauces.create') }}">
+                        Ajouter une sauce
+                    </a>
+                @endauth
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
@@ -46,7 +51,7 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 

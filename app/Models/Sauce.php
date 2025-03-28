@@ -18,8 +18,11 @@ class Sauce extends Model
         'heat',
         'likes',
         'dislikes',
-        'usersLiked',
-        'usersDisliked'
+    ];
+
+    protected $casts = [
+        'usersLiked' => 'array',
+        'usersDisliked' => 'array',
     ];
 
     public function user()

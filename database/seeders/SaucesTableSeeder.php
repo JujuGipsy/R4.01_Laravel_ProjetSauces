@@ -11,7 +11,7 @@ class SaucesTableSeeder extends Seeder
     public function run()
     {
         Sauce::create([
-            'userId' => 1, // Remplace avec un user_id valide
+            'userId' => 1,
             'name' => 'Sauce KIPIK',
             'manufacturer' => "Feli'Peppers",
             'description' => 'Es une sauce faite con uno pimento qui pique muy bien ! Ayé !',
@@ -20,8 +20,8 @@ class SaucesTableSeeder extends Seeder
             'heat' => 10,
             'likes' => 1,
             'dislikes' => 0,
-            'usersLiked' => json_encode([]), // Tableau vide en JSON 
-            'usersDisliked' => json_encode([]), // Tableau vide en JSON
+            'usersLiked' => json_encode([]),
+            'usersDisliked' => json_encode([]),
         ]);
     }
 }
